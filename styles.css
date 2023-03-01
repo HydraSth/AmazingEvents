@@ -1,0 +1,12 @@
+
+.carousel-inner>div>div{
+    width: 18rem;
+}
+  
+.carousel-inner>div>div>img{
+    height: 150px;
+}
+
+nav img{
+    width: 15vw;
+}

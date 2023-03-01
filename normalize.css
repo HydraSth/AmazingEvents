@@ -159,8 +159,7 @@ sup {
 
 img {
   border-style: none;
-  width: 5vw;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* Forms
