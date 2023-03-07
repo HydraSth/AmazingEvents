@@ -9,3 +9,7 @@
 nav img {
 	width: 10vw;
 }
+
+.h-75{
+	min-height: 75vh;
+}
