@@ -1,22 +1,19 @@
 import { data } from "./data.js"
 
-data.events.forEach((element) => {
-	//Fechas totales
-	let Tarjetas = document.getElementById("Events-Home")
-    //Aumenta la certeza del filtrado
-    let CategoriaElemento=element.category;
-    CategoriaElemento= CategoriaElemento.toLowerCase();
-    if (Tarjetas != null) {
-		Tarjetas.insertAdjacentHTML(
+let bodyInsert = document.getElementById("bodyInsert")
+
+function InsertarElementos(element){
+    if (bodyInsert != null) {
+		bodyInsert.insertAdjacentHTML(
 			"beforeend",
 			`
-        <div class="d-inline-block mt-2 ms-2 card ${CategoriaElemento}">
+        <div class="d-inline-block mt-2 ms-2 card ${element.category.toLowerCase()} ${element._id}">
         <img src="${element.image}" class="card-img-top" alt="${element.name}">
         <div class="card-body d-flex flex-column justify-content-between">
             <h5 class="card-title">${element.name}</h5>
-            <p class="card-text">${element.description}</p>
+            <p class="card-text description">${element.description}</p>
             <div class="d-flex">
-                <a type="button" class="btn btn-primary" href="./details.html?${element._id}">
+                <a type="button" class="btn btn-primary" href="./details.html?id=${element._id}">
                 Learn more
                 </a>
                 <p class="ms-3 py-2 text-center d-block my-auto bg-success rounded w-25 text-light">${element.price}$</p>
@@ -26,100 +23,70 @@ data.events.forEach((element) => {
         `
 		)
 	}
-})
-
-data.events.forEach((element) => {
-	//Fechas proximas
-	let Tarjetas = document.getElementById("Events-Upcoming")
-    //Aumenta la certeza del filtrado
-    let CategoriaElemento=element.category;
-    CategoriaElemento= CategoriaElemento.toLowerCase();    
-	if (Tarjetas != null) {
-		if (data.currentDate < element.date) {
-			Tarjetas.insertAdjacentHTML(
-                "beforeend",
-                `
-            <div class="d-inline-block mt-2 ms-2 card ${CategoriaElemento}">
-            <img src="${element.image}" class="card-img-top" alt="${element.name}">
-            <div class="card-body d-flex flex-column justify-content-between">
-                <h5 class="card-title">${element.name}</h5>
-                <p class="card-text">${element.description}</p>
-                <div class="d-flex">
-                    <a type="button" class="btn btn-primary" href="./details.html?${element._id}">
-                    Learn more
-                    </a>
-                    <p class="ms-3 py-2 text-center d-block my-auto bg-success rounded w-25 text-light">${element.price}$</p>
-                </div>
-            </div>
-            </div>
-            `
-			)
-		}
-	}
-})
-
-data.events.forEach((element) => {
-	//Fechas pasadas
-	let Tarjetas = document.getElementById("Events-Past")
-    //Aumenta la certeza del filtrado
-    let CategoriaElemento=element.category;
-    CategoriaElemento= CategoriaElemento.toLowerCase();
-	if (Tarjetas != null) {
-		if (data.currentDate > element.date) {
-			Tarjetas.insertAdjacentHTML(
-                "beforeend",
-                `
-            <div class="d-inline-block mt-2 ms-2 card ${CategoriaElemento}">
-            <img src="${element.image}" class="card-img-top" alt="${element.name}">
-            <div class="card-body d-flex flex-column justify-content-between">
-                <h5 class="card-title">${element.name}</h5>
-                <p class="card-text">${element.description}</p>
-                <div class="d-flex">
-                    <a type="button" class="btn btn-primary" href="./details.html?${element._id}">
-                    Learn more
-                    </a>
-                    <p class="ms-3 py-2 text-center d-block my-auto bg-success rounded w-25 text-light">${element.price}$</p>
-                </div>
-            </div>
-            </div>
-            `
-			)
-		}
-	}
-})
+}
+if(window.location.href.includes('/index.html')){
+    data.events.forEach((element)=>InsertarElementos(element))
+}else if(window.location.href.includes('/pEvents.html')){
+    data.events.forEach((element)=>{ if(element.date<data.currentDate){InsertarElementos(element)} })
+}else if(window.location.href.includes('/uEvents.html')){
+    data.events.forEach((element)=>{ if(element.date>data.currentDate){InsertarElementos(element)} })
+}
 
 //Filtrado
 const Tarjetas = document.querySelectorAll(".card")
 const filtros = document.querySelectorAll(".filtro")
+let filtrosActivos=[]
 
 function filtrar() {
-    Tarjetas.forEach((elemento) => {
-        let mostrar = true
+	Tarjetas.forEach((elemento) => {
+        //Se ocultan todos los elementos
+		elemento.classList.add("Ocultar")
 		filtros.forEach((filtro) => {
-			const valorFiltro = filtro.dataset.valor
+            //Si el filtro esta activo
 			if (filtro.checked) {
-                if (!elemento.classList.contains(valorFiltro)) {
-					mostrar = false
+                //Y no esta colocado en el array de filtros activos
+				if (!filtrosActivos.includes(filtro.dataset.valor)) {
+                    //Lo añade
+					filtrosActivos.push(filtro.dataset.valor)
+				}
+                //Todos los elementos que cumplan con el filtro se muestran
+				for (let i = 0; i <= filtrosActivos.length - 1; i++) {
+					if (elemento.classList.contains(filtrosActivos[i])) {
+						elemento.classList.remove("Ocultar")
+					}
+				}
+            //Si el filtro no esta activo
+			}else{
+                //Si estaba activado y se desactivo
+				if (filtrosActivos.includes(filtro.dataset.valor)) {
+                    //Se quita
+					filtrosActivos = filtrosActivos.filter(
+						(mod) => mod != filtro.dataset.valor
+					)
 				}
 			}
 		})
-		elemento.style.display = mostrar
-        ? elemento.style.setProperty("display", "block", "important")
-			: elemento.style.setProperty("display", "none", "important")
+        //Si no hay ningun filtro activo se muestran todos
+        if(filtrosActivos.length==0){
+            elemento.classList.remove("Ocultar")
+        }
 	})
 }
 
+//Listener de evento
 filtros.forEach((filtro) => {
     filtro.addEventListener("change", filtrar)
 })
 
+
 const search = document.querySelector("#Search")
 search.addEventListener("keyup", ()=>{
     Tarjetas.forEach((Tarjeta)=>{
-        let ClasesTarjeta=Tarjeta.classList.toString();
-        ClasesTarjeta.includes(search.value.toLowerCase())
-        ?Tarjeta.style.setProperty("display", "block", "important")
-            :Tarjeta.style.setProperty("display", "none", "important")
+        let ClasesTarjeta=Tarjeta.textContent.toLowerCase();
+        if(ClasesTarjeta.includes(search.value.toLowerCase())||filtrosActivos.includes(search.value.toLowerCase()))
+        {Tarjeta.style.setProperty("display", "block", "important")
+        }else{Tarjeta.style.setProperty("display", "none", "important")}
     })
 
 })
+

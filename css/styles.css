@@ -13,3 +13,7 @@ nav img {
 .h-75{
 	min-height: 75vh;
 }
+
+.Ocultar{
+	display: none!important;
+}
