@@ -8,18 +8,22 @@ function InsertarElementos(element){
 			"beforeend",
 			`
         <div class="d-inline-block mt-2 ms-2 card ${element.category.toLowerCase()} ${element._id}">
-        <img src="${element.image}" class="card-img-top" alt="${element.name}">
-        <div class="card-body d-flex flex-column justify-content-between">
-            
-            <h5 class="card-title">${element.name}</h5>
-            <p class="card-text description">${element.description}</p>
-            <div class="d-flex">
-                <a type="button" class="btn btn-primary" href="./details.html?id=${element._id}">
-                Learn more
-                </a>
-                <p class="ms-3 py-2 text-center d-block my-auto bg-success rounded w-25 text-light">${element.price}$</p>
+            <img src="${element.image}" class="card-img-top" alt="${element.name}">
+            <div style="height: 60%" class="card-body d-flex flex-column justify-content-between">
+                <div>
+                    <h5 class="card-title">${element.name}</h5>
+                    <p class="card-text description">${element.description}</p>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between">
+                        <a type="button" class="btn btn-primary" href="./details.html?id=${element._id}">
+                        Learn more
+                        </a>
+                        <p class="ms-3 py-2 text-center d-block my-auto bg-success rounded w-25 text-light">${element.price}$</p>
+                    </div>
+                    <p class="fs-6 text-muted text-center mb-0 mt-1">${element.date}</p>
+                </div>
             </div>
-        </div>
         </div>
         `
 		)

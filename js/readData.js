@@ -18,6 +18,11 @@ function InsertarElementos(id){
                                 <h2>${event.name}<span class="badge fs-6 ms-2 bg-secondary">${event.date}</span></h2>
                                 <p>${event.description}</p>
                                 <section>
+                                    <i class="bi bi-cash-stack"></i>
+                                    <p class="d-inline fw-bold">Price:</p>
+                                    <p class="d-inline">${event.price}</p>
+                                </section>
+                                <section>
                                     <i class="bi bi-geo-alt-fill"></i>
                                     <p class="d-inline fw-bold">Location:</p>
                                     <p class="d-inline">${event.place}</p>
