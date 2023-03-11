@@ -152,8 +152,7 @@ function notFound(cantidadDeCarteles){
                 `
                     <section id="NotFound" class="m-auto text-center w-50 shadow rounded p-3">
                         <h2 class="fs-2">No events found<h2>
-                        <p class="fs-5 text-muted">Try searching this instead<p>
-                        <p class="fs-6 text-muted"><b>"batman"</b><p>
+                        <p class="fs-5 text-muted">Try again<p>
                     </section>
                 `
             )

@@ -9,12 +9,12 @@ function InsertarElementos(id){
         data.events.forEach((event)=>{
             if(event._id==id){
                 bodyInsert.insertAdjacentHTML("beforeend",`
-                    <div class="m-auto d-flex flex-column w-50">
-                        <div class="shadow rounded d-flex p-3">
-                            <div class="w-25 mx-3 my-auto">
-                                <img src="${event.image}" alt="Illustatrive image" class="w-100">
+                <div class="m-auto d-flex flex-column w-50">
+                        <div class="row shadow rounded d-flex p-3">
+                            <div class="w-100 mx-3 mx-auto my-auto col">
+                                <img src="${event.image}" alt="Illustatrive image" class="w-100 rounded">
                             </div>
-                            <section class="d-flex text-dark flex-column g-2">
+                            <section class="d-flex text-dark flex-column g-2 col-sm-8">
                                 <h2>${event.name}<span class="badge fs-6 ms-2 bg-secondary">${event.date}</span></h2>
                                 <p>${event.description}</p>
                                 <section>
@@ -39,9 +39,9 @@ function InsertarElementos(id){
                                 </section>
                             </section>
                         </div>
-                        <a class="btn btn-secondary mt-2 shadow" href="./index.html"><i class="bi bi-arrow-left-short"></i> Back Home</a>
-                    </div>
-                    `
+                    <a class="btn btn-secondary my-2 shadow" href="./index.html"><i class="bi bi-arrow-left-short"></i> Back Home <i class="bi bi-house"></i></a>
+                </div>
+                 `
                 )
             }
         })
