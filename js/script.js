@@ -40,7 +40,7 @@ let filtrosActivos=[]
 function filtrar() {
 	Tarjetas.forEach((elemento) => {
         //Se ocultan todos los elementos
-		elemento.classList.add("Ocultar")
+		visibility(elemento,'ocultar')
 		filtros.forEach((filtro) => {
             //Si el filtro esta activo
 			if (filtro.checked) {
@@ -52,7 +52,7 @@ function filtrar() {
                 //Todos los elementos que cumplan con el filtro se muestran
 				for (let i = 0; i <= filtrosActivos.length - 1; i++) {
 					if (elemento.classList.contains(filtrosActivos[i])) {
-						elemento.classList.remove("Ocultar")
+                        visibility(elemento,'mostrar')
 					}
 				}
             //Si el filtro no esta activo
@@ -68,7 +68,7 @@ function filtrar() {
 		})
         //Si no hay ningun filtro activo se muestran todos
         if(filtrosActivos.length==0){
-            elemento.classList.remove("Ocultar")
+            visibility(elemento,'ocultar')
         }
 	})
 }
@@ -78,15 +78,68 @@ filtros.forEach((filtro) => {
     filtro.addEventListener("change", filtrar)
 })
 
-
+// Filtrado de texto
 const search = document.querySelector("#Search")
-search.addEventListener("keyup", ()=>{
-    Tarjetas.forEach((Tarjeta)=>{
-        let ClasesTarjeta=Tarjeta.textContent.toLowerCase();
-        if(ClasesTarjeta.includes(search.value.toLowerCase())||filtrosActivos.includes(search.value.toLowerCase()))
-        {Tarjeta.style.setProperty("display", "block", "important")
-        }else{Tarjeta.style.setProperty("display", "none", "important")}
-    })
 
+//Listener de texto
+search.addEventListener("keyup", ()=>{
+    //Cantidad de tarjetas ocultas
+    let tarjetasOcultas = 0
+    //Si la barra de busqueda no esta vacia
+    if(search.value!=''){
+        Tarjetas.forEach((Tarjeta)=>{
+            //Se guarda toda la informacion de la tarjeta
+            let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
+            
+            if(ClasesTarjeta.includes(search.value.toLowerCase())){
+                visibility(Tarjeta,'mostrar')
+                notFound(false)
+            }else{
+                visibility(Tarjeta,'ocultar')
+                tarjetasOcultas +=1
+            }
+            if(tarjetasOcultas==14){
+                notFound(true)
+            }
+        })
+    //Si la barra de busqueda esta vacia
+    }else{
+        Tarjetas.forEach((Tarjeta)=>{
+            visibility(Tarjeta,'mostrar')
+            notFound(false)
+        })
+    }
 })
 
+function notFound(cantidadDeCarteles){
+    let cartel = document.getElementById("NotFound");
+    let bloqueMain = document.querySelector("main")
+    if(cantidadDeCarteles==1){
+        if(cartel==null){
+            bloqueMain.insertAdjacentHTML(
+                "beforeend",
+                `
+                    <section id="NotFound" class="m-auto text-center w-50 shadow rounded p-3">
+                        <h2 class="fs-2">No events found<h2>
+                        <p class="fs-5 text-muted">Try searching this instead<p>
+                        <p class="fs-6 text-muted"><b>"batman"</b><p>
+                    </section>
+                `
+            )
+        }
+    }else if(cantidadDeCarteles==0){
+        if(cartel!=null){
+            cartel.remove()
+            cantidadDeCarteles=0
+        }
+    }
+}
+
+//Oculta o muestra los elementos
+function visibility(elemento,view){
+    if(view=='mostrar'){
+        elemento.style.setProperty("display", "block", "important")
+    }else if(view=='ocultar'){
+        elemento.style.setProperty("display", "none", "important")
+    }
+}
