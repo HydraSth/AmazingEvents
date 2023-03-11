@@ -10,6 +10,7 @@ function InsertarElementos(element){
         <div class="d-inline-block mt-2 ms-2 card ${element.category.toLowerCase()} ${element._id}">
         <img src="${element.image}" class="card-img-top" alt="${element.name}">
         <div class="card-body d-flex flex-column justify-content-between">
+            
             <h5 class="card-title">${element.name}</h5>
             <p class="card-text description">${element.description}</p>
             <div class="d-flex">
@@ -39,6 +40,7 @@ let filtrosActivos=[]
 
 function filtrar() {
 	Tarjetas.forEach((elemento) => {
+        elemento.classList.remove('Activo')
         //Se ocultan todos los elementos
 		visibility(elemento,'ocultar')
 		filtros.forEach((filtro) => {
@@ -51,9 +53,10 @@ function filtrar() {
 				}
                 //Todos los elementos que cumplan con el filtro se muestran
 				for (let i = 0; i <= filtrosActivos.length - 1; i++) {
-					if (elemento.classList.contains(filtrosActivos[i])) {
+                    if (elemento.classList.contains(filtrosActivos[i])) {
                         visibility(elemento,'mostrar')
-					}
+                        elemento.classList.add('Activo')
+					}                    
 				}
             //Si el filtro no esta activo
 			}else{
@@ -61,14 +64,15 @@ function filtrar() {
 				if (filtrosActivos.includes(filtro.dataset.valor)) {
                     //Se quita
 					filtrosActivos = filtrosActivos.filter(
-						(mod) => mod != filtro.dataset.valor
-					)
-				}
+                        (mod) => mod != filtro.dataset.valor
+                    )
+                }
 			}
 		})
         //Si no hay ningun filtro activo se muestran todos
         if(filtrosActivos.length==0){
-            visibility(elemento,'ocultar')
+            visibility(elemento,'mostrar')
+            elemento.classList.remove('Activo')
         }
 	})
 }
@@ -87,30 +91,53 @@ search.addEventListener("keyup", ()=>{
     let tarjetasOcultas = 0
     //Si la barra de busqueda no esta vacia
     if(search.value!=''){
-        Tarjetas.forEach((Tarjeta)=>{
-            //Se guarda toda la informacion de la tarjeta
-            let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
-            
-            if(ClasesTarjeta.includes(search.value.toLowerCase())){
-                visibility(Tarjeta,'mostrar')
-                notFound(false)
-            }else{
-                visibility(Tarjeta,'ocultar')
-                tarjetasOcultas +=1
-            }
-            if(tarjetasOcultas==14){
-                notFound(true)
-            }
+        //Si no hay filtros activos
+        if(filtrosActivos.length==0){
+            Tarjetas.forEach((Tarjeta)=>{
+                //Se guarda toda la informacion de la tarjeta
+                let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
+                if(ClasesTarjeta.includes(search.value.toLowerCase())){
+                    visibility(Tarjeta,'mostrar')
+                    notFound(false)
+                }else{
+                    visibility(Tarjeta,'ocultar')
+                    tarjetasOcultas +=1
+                }
+                if(tarjetasOcultas==Tarjetas.length){
+                    notFound(true)
+                }
         })
+        //Si hay filtros activos
+        }else{
+            let Activos = document.querySelectorAll('.Activo')
+            Activos.forEach((Tarjeta)=>{
+                //Se guarda toda la informacion de la tarjeta
+                let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
+                if(ClasesTarjeta.includes(search.value.toLowerCase())){
+                    visibility(Tarjeta,'mostrar')
+                    notFound(false)
+                }else{
+                    visibility(Tarjeta,'ocultar')
+                    tarjetasOcultas +=1
+                }
+
+                if(tarjetasOcultas==Activos.length){
+                    notFound(true)
+                }
+            })
+        }
     //Si la barra de busqueda esta vacia
     }else{
-        Tarjetas.forEach((Tarjeta)=>{
-            visibility(Tarjeta,'mostrar')
-            notFound(false)
-        })
+        if(filtrosActivos.length==0){
+            Tarjetas.forEach((Tarjeta)=>{
+                visibility(Tarjeta,'mostrar')
+                notFound(false)
+            })
+        }
     }
 })
 
+//Si no encuentra los elementos..
 function notFound(cantidadDeCarteles){
     let cartel = document.getElementById("NotFound");
     let bloqueMain = document.querySelector("main")
