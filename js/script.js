@@ -1,13 +1,17 @@
-import { data } from "./data.js"
+// Recoge lo datos de la url
+const fetchedData = await fetch('https://mindhub-xj03.onrender.com/api/amazing');
+// Lo parsea a Json
+const data = await fetchedData.json();
+//Seccion del body donde van las cards
+const bodyInsert = document.getElementById("bodyInsert")
 
-let bodyInsert = document.getElementById("bodyInsert")
-
+//Insercion de elementos
 function InsertarElementos(element){
     if (bodyInsert != null) {
 		bodyInsert.insertAdjacentHTML(
 			"beforeend",
 			`
-        <div class="d-inline-block mt-2 ms-2 card ${element.category.toLowerCase()} ${element._id}">
+        <div class="d-inline-block mt-2 ms-2 card ${element.category} ${element._id}">
             <img src="${element.image}" class="card-img-top" alt="${element.name}">
             <div style="height: 60%" class="card-body d-flex flex-column justify-content-between">
                 <div>
@@ -34,13 +38,42 @@ if(window.location.href.includes('/index.html')){
 }else if(window.location.href.includes('/pEvents.html')){
     data.events.forEach((element)=>{ if(element.date<data.currentDate){InsertarElementos(element)} })
 }else if(window.location.href.includes('/uEvents.html')){
-    data.events.forEach((element)=>{ if(element.date>data.currentDate){InsertarElementos(element)} })
+    data.events.forEach((element)=>{ if(element.date>data.currentDate){InsertarElementos(element)} })}
+
+// Crea filtros
+function crearFiltros(){
+    //Seccion de los filtros
+    let seccionFiltros = document.getElementById("seccion-filtros");
+    let filtros = [];
+    data.events.forEach(element => {
+        let filtro = element.category
+        if(!filtros.includes(element.category)){
+            seccionFiltros.insertAdjacentHTML('beforeend', 
+            `<li>
+                <input class="filtro" type="checkbox" data-valor="${filtro}" id="${filtro}">
+                <label class="pe-3" for="${filtro}">${filtro}</label>
+            </li>
+            `)
+            filtros.push(filtro)
+        }
+    });
 }
+
+crearFiltros()
 
 //Filtrado
 const Tarjetas = document.querySelectorAll(".card")
 const filtros = document.querySelectorAll(".filtro")
 let filtrosActivos=[]
+
+//Listener de evento
+filtros.forEach((filtro) => {
+    filtro.addEventListener("input", filtrar)
+})
+
+// function filtradoTotal(){
+//     filtrar()
+// }
 
 function filtrar() {
 	Tarjetas.forEach((elemento) => {
@@ -81,10 +114,6 @@ function filtrar() {
 	})
 }
 
-//Listener de evento
-filtros.forEach((filtro) => {
-    filtro.addEventListener("change", filtrar)
-})
 
 // Filtrado de texto
 const search = document.querySelector("#Search")
