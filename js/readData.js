@@ -34,14 +34,14 @@ function InsertarElementos(id){
                                 </section>
                                 <section>
                                     <i class="bi bi-person-fill"></i>
-                                    <p class="d-inline fw-bold">Estimate:</p>
+                                    <p class="d-inline fw-bold">${event.estimate==null?'Assistance':'Estimate'}</p>
                                     <p class="d-inline">${event.estimate!=null?event.estimate:event.assistance}</p>
                                 </section>
                             </section>
                         </div>
                     <a class="btn btn-secondary my-2 shadow" href="./index.html"><i class="bi bi-arrow-left-short"></i> Back Home <i class="bi bi-house"></i></a>
                 </div>
-                 `
+                `
                 )
             }
         })
