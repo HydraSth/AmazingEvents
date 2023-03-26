@@ -75,12 +75,16 @@ function filtradoTotal(){
 
 function filtrarCheckbox(){
     let filtrosActivos=casillasFiltros.filter(filtro=>filtro.checked==true).map((filtro)=>{return filtro.id});
-    return Tarjetas.filter((tarjeta)=>{
-        let categoriasTarjeta=tarjeta.classList.value;
-        return filtrosActivos.some((filtro)=>{
-            return categoriasTarjeta.includes(filtro);
-        }); 
-    });
+    if(!filtrosActivos.length==0){
+        return Tarjetas.filter((tarjeta)=>{
+            let categoriasTarjeta=tarjeta.classList.value;
+            return filtrosActivos.some((filtro)=>{
+                return categoriasTarjeta.includes(filtro);
+            }); 
+        });
+    }else{
+        return Tarjetas;
+    }
 }
 
 function obetenerIds(elementosValidos){
@@ -120,7 +124,7 @@ function filtradoTexto(filtroAproved){
             }
         })
     }
-    
+
     if(prueba.length==0){
         bodyInsert.innerHTML=''
         bodyInsert.insertAdjacentHTML(
