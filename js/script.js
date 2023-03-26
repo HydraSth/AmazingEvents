@@ -67,8 +67,9 @@ const Tarjetas = Array.from(document.querySelectorAll(".card"))
 casillasFiltros.forEach(filtro=>filtro.addEventListener("change", filtradoTotal))
 
 function filtradoTotal(){
-    let filtroAproved= filtrarCheckbox()
-    let idValidas=obetenerIds(filtroAproved);
+    let filtroAproved= filtrarCheckbox();
+    let filtroAproved2=filtradoTexto(filtroAproved);
+    let idValidas=obetenerIds(filtroAproved2);
     imprimirTarjetas(idValidas)
 }
 
@@ -91,11 +92,11 @@ function obetenerIds(elementosValidos){
 }
 
 function imprimirTarjetas(ids){
+    bodyInsert.innerHTML=''
     if(ids.length>0){
-        bodyInsert.innerHTML=''
         ids.forEach((id)=>{
-            const objetosBuscados = data.events.filter(evento => id.includes(evento._id));
-            InsertarElementos(objetosBuscados[0])
+            let objetosBuscados = data.events.filter(evento =>{return evento._id == id});
+            objetosBuscados.forEach((objetoBuscado)=>InsertarElementos(objetoBuscado))
         })
     }else{
         agarrarData(objeto)
@@ -106,77 +107,30 @@ function imprimirTarjetas(ids){
 const search = document.querySelector("#Search")
 search.addEventListener("keyup", filtradoTotal)
 
-function filtradoTexto(){
-    //Cantidad de tarjetas ocultas
-    let tarjetasOcultas = 0
-    //Si la barra de busqueda no esta vacia
-    if(search.value!=''){
-        //Si no hay filtros activos
-        if(filtrosActivos.length==0){
-            Tarjetas.forEach((Tarjeta)=>{
-                //Se guarda toda la informacion de la tarjeta
-                let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
-                if(ClasesTarjeta.includes(search.value.toLowerCase())){
-                    visibility(Tarjeta,'mostrar')
-                    notFound(false)
-                }else{
-                    visibility(Tarjeta,'ocultar')
-                    tarjetasOcultas +=1
-                }
-                if(tarjetasOcultas==Tarjetas.length){
-                    notFound(true)
-                }
+function filtradoTexto(filtroAproved){
+    let prueba=[]    
+    if(search.value==""){
+        return filtroAproved;
+    }else{ 
+        filtroAproved.forEach((tarjeta)=>{
+            let contenidoTarjeta=tarjeta.textContent.toLowerCase();
+            let contenidoBusqueda=search.value;
+            if(contenidoTarjeta.includes(contenidoBusqueda)){
+                prueba.push(tarjeta)
+            }
         })
-        //Si hay filtros activos
-        }else{
-            let Activos = document.querySelectorAll('.Activo')
-            Activos.forEach((Tarjeta)=>{
-                //Se guarda toda la informacion de la tarjeta
-                let ClasesTarjeta=Tarjeta.textContent.toLowerCase()
-                if(ClasesTarjeta.includes(search.value.toLowerCase())){
-                    visibility(Tarjeta,'mostrar')
-                    notFound(false)
-                }else{
-                    visibility(Tarjeta,'ocultar')
-                    tarjetasOcultas +=1
-                }
-
-                if(tarjetasOcultas==Activos.length){
-                    notFound(true)
-                }
-            })
-        }
-    //Si la barra de busqueda esta vacia
+    }
+    
+    if(prueba.length==0){
+        bodyInsert.innerHTML=''
+        bodyInsert.insertAdjacentHTML(
+			"beforeend",
+			`
+        <div class="m-auto">
+            <h2>Not found</h2>
+        </div>
+        `)
     }else{
-        if(filtrosActivos.length==0){
-            Tarjetas.forEach((Tarjeta)=>{
-                visibility(Tarjeta,'mostrar')
-                notFound(false)
-            })
-        }
+        return prueba;
     }
 }
-
-// //Si no encuentra los elementos..
-// function notFound(cantidadDeCarteles){
-//     let cartel = document.getElementById("NotFound");
-//     let bloqueMain = document.querySelector("main")
-//     if(cantidadDeCarteles==1){
-//         if(cartel==null){
-//             bloqueMain.insertAdjacentHTML(
-//                 "beforeend",
-//                 `
-//                     <section id="NotFound" class="m-auto text-center w-50 shadow rounded p-3">
-//                         <h2 class="fs-2">No events found<h2>
-//                         <p class="fs-5 text-muted">Try again<p>
-//                     </section>
-//                 `
-//             )
-//         }
-//     }else if(cantidadDeCarteles==0){
-//         if(cartel!=null){
-//             cartel.remove()
-//             cantidadDeCarteles=0
-//         }
-//     }
-// }
